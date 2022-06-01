@@ -1,8 +1,16 @@
 <template>
     <div id='ats'>
         <h5>{{name}}</h5>
-        <div id='olts'>
-            <p v-for="olt in olts" :key="olt.ip">{{olt.ip}} {{olt.model}} {{olt.firmware}}</p>
+        <div id='border'>
+            <p>{{location}}</p>
+            <hr>
+            <div id='olts'>
+                <p class="olt"  
+                   v-for="olt in olts" :key="olt.ip"
+                >
+                    {{olt.ip}} {{olt.model}} {{olt.firmware}} {{3200}}
+                </p>
+            </div>
         </div>
     </div>
 </template>
@@ -12,15 +20,31 @@ export default {
     name: 'ats',
     props: {
         olts: [],
-        name: String
+        name: String,
+        location: String,
+        address: String
+    },
+
+    methods: {
+     
     }
 }
 </script>
 <style scoped>
     #ats{
-        
-        border-radius: 10%;
-        background-color: aquamarine;
-
+        margin-left: 20px;
+        border-radius: 5%;
+    }
+    #border{
+        background-color: rgba(28, 27, 37, 0.86);
+        margin-bottom:20px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top:10px;
+        color: white;
+        font-size: 14px;
+    }
+    .olt:hover{
+        background-color: rgba(59, 242, 74, 0.234);
     }
 </style>
