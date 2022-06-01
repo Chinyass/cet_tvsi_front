@@ -44,7 +44,4 @@ export default {
         color: white;
         font-size: 14px;
     }
-    .olt:hover{
-        background-color: rgba(59, 242, 74, 0.234);
-    }
 </style>

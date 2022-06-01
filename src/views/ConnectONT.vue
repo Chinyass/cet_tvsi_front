@@ -7,19 +7,24 @@
         </div>
         <b-container>
             <b-input-group prepend="Serial" size="sm" class="w-50">
-                <b-form-input></b-form-input>
+                <b-form-input v-model="serial"></b-form-input>
                 <b-input-group-append>
-                    <b-button variant="outline-info">Найти</b-button>
+                    <b-button 
+                        variant="outline-info" 
+                        @click="find" 
+                        :disabled="loading"
+                        >Найти</b-button>
                 </b-input-group-append>
             </b-input-group>
 
-            <Spinner />
+            <Spinner v-if="loading" />
 
         </b-container>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
 import Spinner from '../components/spinner.vue'
 export default {
     props: {
@@ -30,7 +35,17 @@ export default {
     },
     data: () => {
         return {
-            
+            serial : 'ELTX',
+            loading: false
+        }
+    },
+    methods: {
+        find() {
+            this.loading = true
+            const serial = this.serial.trim()
+            const server_ip = this.$store.getters.SERVER_API
+
+            axios.post(`${server_ip}`)
         }
     }
 }

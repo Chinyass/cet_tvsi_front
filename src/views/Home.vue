@@ -59,7 +59,8 @@ export default {
     }
   },
   created() {
-    axios.get(`http://localhost:8000/ats`).then( res => {
+    const server_ip = this.$store.getters.SERVER_API
+    axios.get(`${server_ip}/ats`).then( res => {
       this.atss = res.data
     })
   },
