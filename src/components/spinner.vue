@@ -1,8 +1,8 @@
 <template>
     <div>
-        <div class="d-flex align-items-center justify-content-center" >
-            <strong>Loading...</strong>
-            <b-spinner class="ml-auto"></b-spinner>
+        <div class="text-center text-danger my-2">
+          <b-spinner class="align-middle"></b-spinner>
+          <strong>Loading...</strong>
         </div>
     </div>
 </template>
