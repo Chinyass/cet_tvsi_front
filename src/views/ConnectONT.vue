@@ -26,6 +26,84 @@
                 :items_acs="ont_info.items_acs"
                 :items_voip="ont_info.items_voip"
             />
+             <div id="form">
+                <b-form @submit="Setting">
+                    <b-form-group
+                        id="input-group-1"
+                        label="login:"
+                        label-for="acs_login"
+                    >
+                        <b-form-input
+                        id="acs_login"
+                        v-model="form.acs_login"
+                        placeholder="Enter login"
+                     
+                        ></b-form-input>
+
+                    </b-form-group>
+
+                    <b-form-group id="input-group-2" label="Password:" label-for="acs_password">
+                        <b-form-input
+                        id="acs_password"
+                        v-model="form.acs_password"
+                        placeholder="Passowrd"
+                       
+                        ></b-form-input>
+                    </b-form-group>
+
+                    <b-form-group id="input-group-3" label="Template:" label-for="template">
+                        <b-form-select
+                        id="template"
+                        v-model="form.template"
+                        :options="templates"
+                      
+                        ></b-form-select>
+                    </b-form-group>
+
+                    <b-form-checkbox
+                        id="checkbox-1"
+                        v-model="form.voip_selected"
+                        name="checkbox-1"
+                        :value="true"
+                        :unchecked-value="false"
+                    >
+                        VOIP
+                    </b-form-checkbox>
+                    <div v-if="form.voip_selected">
+                        <b-form-group
+                            id="voip_number-gr"
+                            label="number:"
+                            label-for="voip_number"
+                        >
+                            <b-form-input
+                            id="voip_number"
+                            v-model="form.voip_number"
+                            placeholder="Enter number"
+                           
+                            ></b-form-input>
+                        </b-form-group>
+                        <b-form-group id="voip_password-gr" label="Password:" label-for="voip_password">
+                            <b-form-input
+                            id="voip_password"
+                            v-model="form.voip_password"
+                            placeholder="Passowrd"
+                           
+                            ></b-form-input>
+                        </b-form-group>
+                        <b-form-group id="server-gr" label="Server:" label-for="voip_server">
+                            <b-form-select
+                            id="voip_server"
+                            v-model="form.voip_server"
+                            :options="voip_servers"
+                        
+                            ></b-form-select>
+                        </b-form-group>
+
+                    </div>
+                    <b-button type="submit" variant="primary">Submit</b-button>
+                </b-form>
+                {{form}}
+            </div>
         </b-container>
     </div>
 </template>
@@ -53,6 +131,17 @@ export default {
                 items_voip: [],
                 correct : false
             },
+            form : {
+                acs_login: '',
+                acs_password: '',
+                template: '',
+                voip_selected : false,
+                voip_password : '',
+                voip_login : '',
+                voip_server : '94.230.240.28'
+            },
+            templates : ['ntu-rg0','ntu-rg1'],
+            voip_servers: ['94.230.240.28','94.230.240.29'],
             errors : []
         }
     },
@@ -76,6 +165,14 @@ export default {
                 console.log(res_data)
                 res_data.forEach(data => {
                     if (!data['error']){
+
+                        if (data.TEMPLATE == 'Not created'){
+                            this.form.template = `ntu-rg${data.PORT}`
+                        }
+                        else{
+                            this.form.template = data.TEMPLATE
+                        }
+
                         this.ont_info.items_ont = [{
                             'ip olt' : data.ip,
                             serial : data.SERIAL,
@@ -111,14 +208,15 @@ export default {
                 console.log(this.ont_info)
                 this.loading = false
             })
+        },
+        Setting(){
+            console.log(this.form)
         }
     }
 }
 </script>
 <style scoped>
- .find-ont{
-     font-size: 12px;
- }
+
  .tagcontainer{
      display: flex;
      align-content: space-around;
@@ -130,5 +228,12 @@ export default {
      background-color: rgba(53, 220, 232, 0.659);
      color:rgb(9, 48, 208);
      font-family: 'Courier New', Courier, monospace;
+ }
+ #form{
+     background-color: rgba(249, 252, 249, 0.233);
+     padding: 2%;
+     border: 2px solid black;
+    
+     width: 50%;
  }
 </style>
