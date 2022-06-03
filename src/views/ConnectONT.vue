@@ -26,8 +26,8 @@
                 :items_acs="ont_info.items_acs"
                 :items_voip="ont_info.items_voip"
             />
-             <div id="form">
-                <b-form @submit="Setting">
+             <div id="form"  v-if="show_form">
+                <b-form @submit.prevent="Setting">
                     <b-form-group
                         id="input-group-1"
                         label="login:"
@@ -55,7 +55,7 @@
                         <b-form-select
                         id="template"
                         v-model="form.template"
-                        :options="templates"
+                        :options="templates_options"
                       
                         ></b-form-select>
                     </b-form-group>
@@ -102,12 +102,17 @@
                     </div>
                     <b-button type="submit" variant="primary">Submit</b-button>
                 </b-form>
-                {{form}}
+            </div>
+            <div class="inform" v-if="show_status">
+                <b-card-group deck>
+                    <b-card bg-variant="dark" header="status" text-variant="white" class="text-center">
+                        <b-card-text v-for="st in Object.keys(status)" :key="st">{{st}} : {{status[st]}}</b-card-text>
+                    </b-card>
+                </b-card-group>
             </div>
         </b-container>
     </div>
 </template>
-
 <script>
 import axios from 'axios'
 import Spinner from '../components/spinner.vue'
@@ -125,6 +130,7 @@ export default {
         return {
             serial : 'ELTX',
             loading: false,
+            ip : '',
             ont_info : {
                 items_ont: [],
                 items_acs: [],
@@ -140,8 +146,14 @@ export default {
                 voip_login : '',
                 voip_server : '94.230.240.28'
             },
-            templates : ['ntu-rg0','ntu-rg1'],
+            model : '',
+            true_template : '',
+            templates_options : [],
+            templates : {},
             voip_servers: ['94.230.240.28','94.230.240.29'],
+            show_form : false,
+            status: {},
+            show_status : false,
             errors : []
         }
     },
@@ -151,6 +163,7 @@ export default {
                 this.$router.push({ name: 'Home'})
             }
             this.loading = true
+            this.show_form = false
             this.ont_info.items_ont = []
             this.ont_info.items_acs = []
             this.ont_info.items_voip = []
@@ -165,6 +178,11 @@ export default {
                 console.log(res_data)
                 res_data.forEach(data => {
                     if (!data['error']){
+                        this.true_template = data.TEMPLATE
+                        this.templates = data.TEMPLATES
+                        this.templates_options = Object.values( data.TEMPLATES )
+                        this.ip = data.ip
+                        this.model = data.MODEL
 
                         if (data.TEMPLATE == 'Not created'){
                             this.form.template = `ntu-rg${data.PORT}`
@@ -199,6 +217,7 @@ export default {
                             }]
 
                         this.ont_info.correct = true
+                        this.show_form = true
                     }
                     else{
                         this.errors.push(data)
@@ -210,7 +229,44 @@ export default {
             })
         },
         Setting(){
-            console.log(this.form)
+            const server_ip = this.$store.getters.SERVER_API
+            const data = {}
+            data.acs_login = this.form.acs_login
+            data.acs_password = this.form.acs_password
+            
+            data.voip_selected = this.form.voip_selected
+            data.voip_password = this.form.voip_password
+            data.voip_number = this.form.voip_login
+            data.voip_server = this.form.voip_server
+            
+            if (this.true_template === this.form.template)
+                data.template_change = false
+            else
+                data.template_change = true
+            
+            data.template = this.form.template
+            data.serial = this.serial
+            data.ip = this.ip
+
+            data.model = this.model
+            
+            axios.post(`${server_ip}/setting_ont`, data).then( res => {
+                let res_data = res.data
+                const status = {}
+                Object.keys(res_data).forEach( el => {
+                    console.log(el)
+                    console.log(res_data[el])
+                    if(res_data[el]){
+                        status[el] = 'Изменено'
+                    }
+                    else{
+                        status[el] = 'Без изменений'
+                    }
+                })
+                this.status = status
+                this.show_status = true
+            })
+
         }
     }
 }
@@ -235,5 +291,9 @@ export default {
      border: 2px solid black;
     
      width: 50%;
+ }
+ .inform{
+     width: 50%;
+     font-size: 12px;
  }
 </style>
