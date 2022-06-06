@@ -162,71 +162,73 @@ export default {
             if (!this.ips){
                 this.$router.push({ name: 'Home'})
             }
-            this.loading = true
-            this.show_form = false
-            this.ont_info.items_ont = []
-            this.ont_info.items_acs = []
-            this.ont_info.items_voip = []
-            const serial = this.serial.trim()
-            const server_ip = this.$store.getters.SERVER_API
-            const ips = this.ips
-            axios.post(`${server_ip}/find_ont`,{
-                serial,
-                ips
-            }).then( res => {
-                const res_data = res.data
-                console.log(res_data)
-                res_data.forEach(data => {
-                    if (!data['error']){
-                        this.true_template = data.TEMPLATE
-                        this.templates = data.TEMPLATES
-                        this.templates_options = Object.values( data.TEMPLATES )
-                        this.ip = data.ip
-                        this.model = data.MODEL
+            else{
+                this.loading = true
+                this.show_form = false
+                this.ont_info.items_ont = []
+                this.ont_info.items_acs = []
+                this.ont_info.items_voip = []
+                const serial = this.serial.trim()
+                const server_ip = this.$store.getters.SERVER_API
+                const ips = this.ips
+                axios.post(`${server_ip}/find_ont`,{
+                    serial,
+                    ips
+                }).then( res => {
+                    const res_data = res.data
+                    console.log(res_data)
+                    res_data.forEach(data => {
+                        if (!data['error']){
+                            this.true_template = data.TEMPLATE
+                            this.templates = data.TEMPLATES
+                            this.templates_options = Object.values( data.TEMPLATES )
+                            this.ip = data.ip
+                            this.model = data.MODEL
+                            console.log('TEMPLATE',this.templates)
+                            if (data.TEMPLATE == 'Not created'){
+                                this.form.template = `ntu-rg${data.PORT}`
+                            }
+                            else{
+                                this.form.template = data.TEMPLATE
+                            }
 
-                        if (data.TEMPLATE == 'Not created'){
-                            this.form.template = `ntu-rg${data.PORT}`
-                        }
-                        else{
-                            this.form.template = data.TEMPLATE
-                        }
-
-                        this.ont_info.items_ont = [{
-                            'ip olt' : data.ip,
-                            serial : data.SERIAL,
-                            'Port/Id' : `${data.PORT}/${data.ID}`,
-                            'RX' : data.OPTICAL_RX,
-                            'TX' : data.OPTICAL_TX,
-                            'MODEL': data.MODEL,
-                            'FIRMWARE' : data.FIRMWARE,
-                            'TEMPLATE' : data.TEMPLATE
-                        }]
-                        
-                        this.ont_info.items_acs = [{
-                            user : data.USER,
-                            login : data.LOGIN,
-                            password : data.PASSWORD,
-                            profile : data.PROFILE,   
-                        }]
-
-                        if(data.VOIP_ENABLE || data.VOIP_NUMBER || data.VOIP_PASSWORD)
-                            this.ont_info.items_voip = [{
-                                'voip enable': data.VOIP_ENABLE,
-                                'voip number' : data.VOIP_NUMBER,
-                                'voip password' : data.VOIP_PASSWORD,
+                            this.ont_info.items_ont = [{
+                                'ip olt' : data.ip,
+                                serial : data.SERIAL,
+                                'Port/Id' : `${data.PORT}/${data.ID}`,
+                                'RX' : parseInt(data.OPTICAL_RX) * 0.1,
+                                'TX' : parseInt(data.OPTICAL_TX) * 0.001,
+                                'MODEL': data.MODEL,
+                                'FIRMWARE' : data.FIRMWARE,
+                                'TEMPLATE' : data.TEMPLATE
+                            }]
+                            
+                            this.ont_info.items_acs = [{
+                                user : data.USER,
+                                login : data.LOGIN,
+                                password : data.PASSWORD,
+                                profile : data.PROFILE,   
                             }]
 
-                        this.ont_info.correct = true
-                        this.show_form = true
-                    }
-                    else{
-                        this.errors.push(data)
-                    }
-                });
-            
-                console.log(this.ont_info)
-                this.loading = false
-            })
+                            if(data.VOIP_ENABLE || data.VOIP_NUMBER || data.VOIP_PASSWORD)
+                                this.ont_info.items_voip = [{
+                                    'voip enable': data.VOIP_ENABLE,
+                                    'voip number' : data.VOIP_NUMBER,
+                                    'voip password' : data.VOIP_PASSWORD,
+                                }]
+
+                            this.ont_info.correct = true
+                            this.show_form = true
+                        }
+                        else{
+                            this.errors.push(data)
+                        }
+                    });
+                
+                    console.log(this.ont_info)
+                    this.loading = false
+                })
+            }
         },
         Setting(){
             const server_ip = this.$store.getters.SERVER_API
@@ -244,7 +246,8 @@ export default {
             else
                 data.template_change = true
             
-            data.template = this.form.template
+            data.template = Object.keys(this.templates).find(key => this.templates[key] === this.form.template);
+            console.log("TEMPLATE",data.template)
             data.serial = this.serial
             data.ip = this.ip
 

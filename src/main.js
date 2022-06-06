@@ -2,10 +2,22 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import VueSocketIO from 'vue-socket.io'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 Vue.config.productionTip = false
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+
+Vue.use(new VueSocketIO({
+  debug: true,
+  connection: `http://localhost:8002/`,
+  vuex: {
+      store,
+      actionPrefix: 'SOCKET_',
+      mutationPrefix: 'SOCKET_'
+  },
+}))
 
 Vue.use(BootstrapVue)
 // Optionally install the BootstrapVue icon components plugin
