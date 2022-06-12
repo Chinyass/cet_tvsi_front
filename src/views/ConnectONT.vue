@@ -79,7 +79,6 @@
                             id="voip_number"
                             v-model="form.voip_number"
                             placeholder="Enter number"
-                           
                             ></b-form-input>
                         </b-form-group>
                         <b-form-group id="voip_password-gr" label="Password:" label-for="voip_password">
@@ -87,7 +86,6 @@
                             id="voip_password"
                             v-model="form.voip_password"
                             placeholder="Passowrd"
-                           
                             ></b-form-input>
                         </b-form-group>
                         <b-form-group id="server-gr" label="Server:" label-for="voip_server">
@@ -95,21 +93,34 @@
                             id="voip_server"
                             v-model="form.voip_server"
                             :options="voip_servers"
-                        
                             ></b-form-select>
                         </b-form-group>
-
                     </div>
                     <b-button type="submit" variant="primary">Submit</b-button>
                 </b-form>
             </div>
-            <div class="inform" v-if="show_status">
-                <b-card-group deck>
-                    <b-card bg-variant="dark" header="status" text-variant="white" class="text-center">
-                        <b-card-text v-for="st in Object.keys(status)" :key="st">{{st}} : {{status[st]}}</b-card-text>
-                    </b-card>
-                </b-card-group>
-            </div>
+            <b-row cols="3">
+                <b-col cols="6">
+                    <div class="inform" v-if="show_status">
+                        <b-card-group deck>
+                            <b-card 
+                                bg-variant="dark" 
+                                header="status" 
+                                text-variant="white"
+                                class="text-center"
+                                >
+                                <b-card-text 
+                                    v-for="st in Object.keys(status)" :key="st">
+                                        {{st}} : {{status[st]}}
+                                </b-card-text>
+                            </b-card>
+                        </b-card-group>
+                    </div>
+                </b-col>
+                <b-col cols="6">
+                    <SpeedGraph v-if="traffic_serial" :serial="traffic_serial" />
+                </b-col>
+            </b-row>
         </b-container>
     </div>
 </template>
@@ -117,6 +128,7 @@
 import axios from 'axios'
 import Spinner from '../components/spinner.vue'
 import ONTINFO from '../components/ONTINFO.vue'
+import SpeedGraph from '../components/SpeedGraph.vue'
 
 export default {
     props: {
@@ -124,11 +136,13 @@ export default {
     },
     components:{
         Spinner,
-        ONTINFO
+        ONTINFO,
+        SpeedGraph
     },
     data: () => {
         return {
             serial : 'ELTX',
+            traffic_serial : '',
             loading: false,
             ip : '',
             ont_info : {
@@ -153,7 +167,7 @@ export default {
             voip_servers: ['94.230.240.28','94.230.240.29'],
             show_form : false,
             status: {},
-            show_status : false,
+            show_status : true,
             errors : []
         }
     },
@@ -227,7 +241,9 @@ export default {
                 
                     console.log(this.ont_info)
                     this.loading = false
+                    
                 })
+                this.traffic_serial = this.serial
             }
         },
         Setting(){
