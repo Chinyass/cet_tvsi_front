@@ -10,7 +10,11 @@
                   @click="toConnectOnt"
                   >Подключение ONT
                 </b-button>
-                <b-button size="sm" variant="outline-info">Поиск инф. по лиц.счету</b-button>
+                <b-button size="sm" 
+                  variant="outline-info"
+                  :disabled="selected_ats.length == 0"
+                  @click="toFindByUser"
+                  >Поиск инф. по лиц.счету</b-button>
               </b-button-group>
             </div>
           </b-col>
@@ -84,6 +88,22 @@ export default {
        })       
        this.$router.push({ name: 'find-ont', params: { ips : ips  } })
     },
+    toFindByUser(){
+       const ips = []
+       this.selected_ats.forEach( el => {
+         const atss = this.atss.filter( ats => {
+            return ats.name === el
+         })
+         if (atss){
+           const ats = atss[0]
+           ats.olts.map( olt => {
+             ips.push(olt.ip)
+           })
+         }
+       })       
+       this.$router.push({ name: 'find-by-user', params: { ips : ips  } })
+    },
+
   }
 
 }

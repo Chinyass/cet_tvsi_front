@@ -111,7 +111,7 @@
                                 >
                                 <b-card-text 
                                     v-for="st in Object.keys(status)" :key="st">
-                                        {{st}} : {{status[st]}}
+                                        {{st}} : <span :class="status[st] == 'Изменено' ? 'succes':'failed'">{{status[st]}}</span>
                                 </b-card-text>
                             </b-card>
                         </b-card-group>
@@ -167,9 +167,13 @@ export default {
             voip_servers: ['94.230.240.28','94.230.240.29'],
             show_form : false,
             status: {},
-            show_status : true,
+            show_status : false,
             errors : []
         }
+    },
+    beforeRouteLeave (to, from, next) {
+        this.$socket.emit('disconnect-traffic')
+        next()
     },
     methods: {
         find() {
@@ -241,9 +245,9 @@ export default {
                 
                     console.log(this.ont_info)
                     this.loading = false
-                    
+                    this.traffic_serial = this.serial
                 })
-                this.traffic_serial = this.serial
+                
             }
         },
         Setting(){
@@ -284,10 +288,17 @@ export default {
                 })
                 this.status = status
                 this.show_status = true
+                this.find()
             })
 
+        },
+        handler: function handler(event) {
+            this.$socket.emit('disconnect-traffic')
         }
-    }
+    },
+    created() {
+        window.addEventListener('beforeunload', this.handler)
+    },
 }
 </script>
 <style scoped>
@@ -314,5 +325,11 @@ export default {
  .inform{
      width: 50%;
      font-size: 12px;
+ }
+ .succes{
+     color: green;
+ }
+ .failed{
+     color: red;
  }
 </style>
