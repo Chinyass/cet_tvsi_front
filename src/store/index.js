@@ -5,8 +5,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    server_api: 'http://localhost:8000',
-    server_socket: 'http://localhost:8002'
+    server_api: 'http://172.16.25.43:8000',
+    server_socket: 'http://172.16.25.43:8002'
   },
   getters: {
     SERVER_API: state => {

@@ -10,7 +10,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import VueApexCharts from 'vue-apexcharts'
 
-const socketConnection = SocketIO('http://localhost:8002');
+const socketConnection = SocketIO('http://172.16.25.43:8002');
 Vue.use(new VueSocketIO({
   debug: true,
   connection: socketConnection,

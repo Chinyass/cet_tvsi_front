@@ -18,7 +18,7 @@
               </b-button-group>
             </div>
           </b-col>
-          <b-col cols="10">
+          <b-col cols="9">
             <b-row cols="4">
               <b-col v-for="data in atss" :key="data.name" 
                 @click="toSelected(data.name)" 
@@ -32,12 +32,10 @@
               </b-col>
             </b-row>
           </b-col>
-          <b-col cols="1">
+          <b-col cols="2">
             <div>
               <b-button-group vertical>
-                <b-button>Top</b-button>
-                <b-button>Middle</b-button>
-                <b-button>Bottom</b-button>
+                <b-button @click="select_all" variant="info" size="sm">Select All</b-button>
               </b-button-group>
             </div>
           
@@ -69,6 +67,9 @@ export default {
     })
   },
   methods: {
+    select_all(){
+      this.selected_ats = this.atss.map( ats => ats.name )
+    },
     toSelected(name){
        const index = this.selected_ats.indexOf(name)
        index !== -1 ? this.selected_ats.splice(index, 1) : this.selected_ats.push(name)

@@ -26,7 +26,7 @@
                 :items_acs="ont_info.items_acs"
                 :items_voip="ont_info.items_voip"
             />
-            <SpeedGraph v-if="traffic_serial" :serial="traffic_serial" />
+            <SpeedGraph v-if="traffic_serial" :serial="traffic_serial" :ip="ip" />
         </b-container>
     </div>    
 </template>
@@ -49,6 +49,7 @@ export default {
     },
     data : () => {
         return {
+            ip : '',
             user : '',
             loading : false,
             traffic_serial: '',

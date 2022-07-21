@@ -118,7 +118,7 @@
                     </div>
                 </b-col>
                 <b-col cols="6">
-                    <SpeedGraph v-if="traffic_serial" :serial="traffic_serial" />
+                    <SpeedGraph v-if="traffic_serial" :serial="traffic_serial" :ip="ip" />
                 </b-col>
             </b-row>
         </b-container>
@@ -214,8 +214,8 @@ export default {
                                 'ip olt' : data.ip,
                                 serial : data.SERIAL,
                                 'Port/Id' : `${data.PORT}/${data.ID}`,
-                                'RX' : parseInt(data.OPTICAL_RX) * 0.1,
-                                'TX' : parseInt(data.OPTICAL_TX) * 0.001,
+                                'RX' : (parseInt(data.OPTICAL_RX) * 0.1).toFixed(2),
+                                'TX' : (parseInt(data.OPTICAL_TX) * 0.001).toFixed(2),
                                 'MODEL': data.MODEL,
                                 'FIRMWARE' : data.FIRMWARE,
                                 'TEMPLATE' : data.TEMPLATE

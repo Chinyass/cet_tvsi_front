@@ -8,7 +8,8 @@
 export default {
     name : 'SeedGraph',
     props: {
-        serial: String
+        serial: String,
+        ip: String
     },
     components: {
         
@@ -102,7 +103,7 @@ export default {
         }
     },
     mounted() {
-        this.$socket.emit('get-traffic',this.serial)
+        this.$socket.emit('get-traffic',{ serial : this.serial, ip : this.ip })
     }    
 }
 </script>

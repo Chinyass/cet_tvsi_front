@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import ConnectONT from '../views/ConnectONT.vue'
 import FindByUser from '../views/FindByUser'
+import PortInfo from '../views/PortInfo'
 
 Vue.use(VueRouter)
 
@@ -24,6 +25,11 @@ const routes = [
     component: FindByUser,
     props: true
   },
+  {
+    path: '/port-info',
+    name: 'port-info',
+    component: PortInfo
+  }
 
 ]
 

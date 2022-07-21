@@ -8,7 +8,7 @@
                 <p class="olt"  
                    v-for="olt in olts" :key="olt.ip"
                 >
-                    {{olt.ip}} {{olt.model}} {{olt.firmware}} {{3200}}
+                    {{olt.ip}} {{olt.model}}
                 </p>
             </div>
         </div>
@@ -43,5 +43,6 @@ export default {
         padding-top:10px;
         color: white;
         font-size: 14px;
+        height: 200px;
     }
 </style>
